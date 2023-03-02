@@ -4,6 +4,7 @@
 #include <crsf_serial.h>
 
 #include <target.h>
+#include "crsf_analyzer.h"
 
 static HardwareSerial CrsfSerialStream1(USART_INPUT_1);
 static HardwareSerial CrsfSerialStream2(USART_INPUT_2);
@@ -12,7 +13,9 @@ static std::vector<std::shared_ptr<CrsfSerial>> crsfs = {
     std::make_shared<CrsfSerial>(CrsfSerialStream1), 
     std::make_shared<CrsfSerial>(CrsfSerialStream2) };
 
+static u_int8_t chosenSerial = 0;
 
+static CRSFAnalyzer Analyzer;
 
 static void setupCrsf(std::shared_ptr<CrsfSerial> csrf_serial)
 {
@@ -46,8 +49,14 @@ void loop_analyze_input() {
         read_strings[i] = crsfs[i]->loop();
     }
 
-    if (read_strings[0] != nullptr) {
-        OutputSerialStream.print(*read_strings[0]);
+    bool should_swap = Analyzer.analyze(crsfs[chosenSerial]);
+    if (should_swap)
+        chosenSerial = (chosenSerial + 1) % crsfs.size();
+
+    String* chosen_string = read_strings[chosenSerial];
+
+    if (chosen_string != nullptr) {
+        OutputSerialStream.print(*chosen_string);
         OutputSerialStream.flush();
     }
 }
