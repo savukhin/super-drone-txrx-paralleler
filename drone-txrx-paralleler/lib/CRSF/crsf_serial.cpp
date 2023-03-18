@@ -12,20 +12,28 @@ CrsfSerial::CrsfSerial(HardwareSerial &port, uint32_t baud) :
 }
 
 // Call from main loop to update
-String* CrsfSerial::loop()
+void CrsfSerial::loop()
+// String* CrsfSerial::loop()
 {
     return handleSerialIn();
 }
 
-String* CrsfSerial::handleSerialIn()
+void CrsfSerial::handleSerialIn()
+// String* CrsfSerial::handleSerialIn()
 {
     // uint8_t result = nullptr;
-    bool got_result = false;
-    String* result = nullptr;
-
+    // bool got_result = false;
+    // String* result = nullptr;
+    // Serial.println("Port " + String(_port.available()));
+    // return result;
+    // if (_port.available())
+    //     Serial.println("Port is available");
+    // else
+    //     Serial.println("Port is unavailable");
+    // return result;
     while (_port.available())
     {
-        got_result = true;
+        // got_result = true;
         uint8_t b = _port.read();
 
         _lastReceive = millis();
@@ -46,16 +54,16 @@ String* CrsfSerial::handleSerialIn()
             _rxBufPos = 0;
         }
 
-        if (result == nullptr) {
-            result = new String("");
-        }
-        result->concat(char(b));
+        // if (result == nullptr) {
+        //     result = new String("");
+        // }
+        // result->concat(char(b));
     }
 
     checkPacketTimeout();
     checkLinkDown();
 
-    return result;
+    // return result;
 }
 
 void CrsfSerial::handleByteReceived()

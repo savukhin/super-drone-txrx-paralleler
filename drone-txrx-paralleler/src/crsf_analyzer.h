@@ -6,5 +6,5 @@ class CRSFAnalyzer {
 public:
     CRSFAnalyzer() = default;
 
-    bool analyze(std::shared_ptr<CrsfSerial> crsf);
+    bool analyze(CrsfSerial &crsf);
 };

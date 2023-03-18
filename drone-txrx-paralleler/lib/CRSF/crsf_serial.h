@@ -14,7 +14,8 @@ public:
     static const unsigned int CRSF_FAILSAFE_STAGE1_MS = 300;
 
     CrsfSerial(HardwareSerial &port, uint32_t baud = CRSF_BAUDRATE);
-    String* loop();
+    // String* loop();
+    void loop();
     void write(uint8_t b);
     void write(const uint8_t *buf, size_t len);
     void queuePacket(uint8_t addr, uint8_t type, const void *payload, uint8_t len);
@@ -49,7 +50,8 @@ private:
     bool _passthroughMode;
     int _channels[CRSF_NUM_CHANNELS];
 
-    String* handleSerialIn();
+    // String* handleSerialIn();
+    void handleSerialIn();
     void handleByteReceived();
     void shiftRxBuffer(uint8_t cnt);
     void processPacketIn(uint8_t len);
