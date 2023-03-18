@@ -1,17 +1,16 @@
 #include <Arduino.h>
 #include <vector>
 #include <memory>
+#include <string>
 #include <crsf_serial.h>
 
 #include <target.h>
 #include "crsf_analyzer.h"
 
-static HardwareSerial CrsfSerialStream1(USART_INPUT_1);
-static HardwareSerial CrsfSerialStream2(USART_INPUT_2);
+static std::vector<void*> UsartInputs = USART_INPUTS;
 static HardwareSerial OutputSerialStream(USART_OUTPUT);
-static std::vector<std::shared_ptr<CrsfSerial>> crsfs = { 
-    std::make_shared<CrsfSerial>(CrsfSerialStream1), 
-    std::make_shared<CrsfSerial>(CrsfSerialStream2) };
+static std::vector<HardwareSerial> CrsfSerialInputStreams = {};
+static std::vector<std::shared_ptr<CrsfSerial>> crsfs(0);
 
 static u_int8_t chosenSerial = 0;
 
@@ -27,6 +26,15 @@ static void setupCrsf(std::shared_ptr<CrsfSerial> csrf_serial)
 }
 
 void setup() {
+    for (auto usart : UsartInputs) {
+        CrsfSerialInputStreams.emplace_back(usart);
+    }
+
+    for (auto stream : CrsfSerialInputStreams) {
+        crsfs.emplace_back(std::make_shared<CrsfSerial>(stream));
+    }
+
+
     for (auto csrf_serial : crsfs) {
         setupCrsf(csrf_serial);
     }
@@ -37,10 +45,10 @@ void loop_read_from_output() {
     while (OutputSerialStream.available() == 0) {}
     String content = OutputSerialStream.readString();
 
-    CrsfSerialStream1.print(content);
-    CrsfSerialStream1.flush();
-    CrsfSerialStream2.print(content);
-    CrsfSerialStream2.flush();
+    for (auto stream : CrsfSerialInputStreams) {
+        stream.print(content);
+        stream.flush();
+    }
 }
 
 void loop_analyze_input() {
@@ -56,8 +64,8 @@ void loop_analyze_input() {
     String* chosen_string = read_strings[chosenSerial];
 
     if (chosen_string != nullptr) {
-        OutputSerialStream.print(*chosen_string);
-        OutputSerialStream.flush();
+        // OutputSerialStream.print(*chosen_string);
+        // OutputSerialStream.flush();
     }
 }
 

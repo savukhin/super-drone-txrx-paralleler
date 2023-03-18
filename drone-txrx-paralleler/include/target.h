@@ -4,10 +4,8 @@
     #define DPIN_LED        LED_BUILTIN
     #define LED_INVERTED    1
     #define APIN_VBAT       A0
-    #define USART_INPUT_1   USART2  // UART2 RX=PA3 TX=PA2
-    #define USART_INPUT_2   USART2  // UART2 RX=PA3 TX=PA2
+    #define USART_INPUTS    { USART2, USART3 }
     #define USART_OUTPUT    USART2  // UART2 RX=PA3 TX=PA2
-    #define OUTPUT_PIN_MAP  PA_15, PB_3, PB_10, PB_11, PA_6, PA_7, PB_0, PB_1 // TIM2 CH1-4, TIM3CH1-4
 #endif
 
 #if !defined(LED_INVERTED)
