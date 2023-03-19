@@ -8,10 +8,6 @@
     #define USART_OUTPUT    USART3  // UART2 RX=PA3 TX=PA2
 #endif
 
-#if !defined(LED_INVERTED)
-    #define LED_INVERTED    0
-#endif
-
 #if !defined(VBAT_R1) || !defined(VBAT_R2)
     // Resistor divider used on VBAT input, R1+R2 must be less than 3178
     #define VBAT_R1         820
